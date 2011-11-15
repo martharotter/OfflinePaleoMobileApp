@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" manifest="offline.manifest">
+<head>
+  <meta charset="utf-8">
+  
+  <link rel="stylesheet" href="css/jquery.mobile-1.0a3.css"  media="screen" title="jquery mobile" charset="utf-8">
+  <link rel="stylesheet" href="css/main.css"  media="screen" charset="utf-8">
+  
+      <style type="text/css">
+        body {
+            font-family: arial, verdana, sans-serif;
+            font-size: 12px;
+        }
+        .dww img {
+            width: 30px;
+            height: 30px;
+            margin: 5px 30px;
+        }
+    </style>
+
+</head>
+<body>
+  <!--
+  Home Page
+  -->
+  <div id="home" data-role="page">
+    <div data-role="header">
+      <h1>Paleo Meals</h1>
+      <!-- 
+      <a href="#new" data-role="button" data-rel="dialog" data-transition="pop" data-icon="plus" class="ui-btn-right">
+        New
+      </a>
+      -->
+    </div>
+    
+    <div data-role="content">
+      <a href="#new" data-rel="dialog" data-transition="pop" data-role="button" data-icon="plus" data-theme="b">
+        New Paleo Meal
+      </a>
+      
+      <ul data-role="listview" data-inset="true">
+        <li><a href="#all">All Paleo Meals</a></li>
+        <li><a href="#nearest">Nearest Paleo Meals</a></li>
+      </ul>
+    </div>
+    
+  </div>
+  
+  <!--
+  New Meal Form
+  -->
+  <div id="new" data-role="page">
+    <div data-role="header">
+      <h1>New Paleo Meal</h1>
+    </div>
+    
+    <div data-role="content">
+      <form action="#" method="post">
+        <div data-role="fieldcontain">
+          <fieldset data-role="controlgroup">
+    	      <legend>Choose a meal type:</legend>
+         	<input type="radio" name="title" id="radio-choice-1" value="Breakfast" checked="checked" />
+         	<label for="radio-choice-1">Breakfast</label>
+
+         	<input type="radio" name="title" id="radio-choice-2" value="Lunch"  />
+         	<label for="radio-choice-2">Lunch</label>
+
+         	<input type="radio" name="title" id="radio-choice-3" value="Dinner"  />
+         	<label for="radio-choice-3">Dinner</label>
+
+         	<input type="radio" name="title" id="radio-choice-4" value="Snack"  />
+         	<label for="radio-choice-4">Snack</label>
+            </fieldset> 
+        </div>
+        
+        <div data-role="fieldcontain">
+          <label for="body">Description</label>
+          <textarea id="body" name="body" ></textarea>
+        </div>
+        
+        <div data-role="fieldcontain">
+          <label for="timestamp">Date / Time</label>
+          <input type="datetime" id="timestamp" name="timestamp" value="">
+        </div>
+        
+        <div data-role="fieldcontain">
+          <label for="locate">Tag With Location</label>
+          <select id="locate" name="locate" data-role="slider">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+        
+        <button data-icon="check" data-theme="b">Save</button>
+      </form>
+    </div>
+    
+  </div>
+  
+  <!--
+  List of Meals (Alphabetical)
+  -->
+  <div id="all" data-role="page">
+    
+    <div data-role="header">
+      <a href="#home" data-role="button"  data-icon="arrow-l" data-rel="back">
+        Back
+      </a>
+      <h1>All Paleo Meals</h1>
+    </div>
+    
+    <div data-role="content">
+      <ul data-role="listview" id="all_meals">
+      </ul>
+    </div>
+  </div>
+  
+  <!--
+  Nearest Meals
+  -->
+  <div id="nearest" data-role="page">
+    
+    <div data-role="header">
+      <a href="#home" data-role="button"  data-icon="arrow-l" data-rel="back">
+        Back
+      </a>
+      <h1>Nearest Paleo Meals</h1>
+      <a href="#" class="locate" data-role="button"  data-icon="refresh" class="ui-btn-right" data-theme="e">
+        Locate
+      </a>
+    </div>
+    
+    <div data-role="content">
+      <ul data-role="listview" id="nearest_meals">
+      </ul>
+    </div>
+  </div>
+  
+  
+  <!--
+  List of Meal detail pages
+  -->
+  <div id="meal-detail-list">
+  </div>
+  
+  
+  <script type="text/template" id="meal-list-item-template">
+    <a href="#meal_<%= meal.id %>" >
+      <%= meal.get('body') %>
+      <!-- (<%= meal.distanceFromCurrent() %>) -->
+    </a>
+  </script>
+  
+  <script type="text/template" id="meal-detail-template">
+    <div data-role="header">
+      <a href="#home" data-role="button"  data-icon="arrow-l" data-rel="back">  
+        Back
+      </a>
+      <h1><%= meal.get('title') %></h1>
+    </div>
+    <div data-role="content">
+      <h3>Meal Description:</h3>
+      <%= meal.get('body') %>
+      <h3>Meal Type:</h3>
+      <%= meal.get('title') %>
+      
+      <% if(meal.isTimeStampTagged()){ %>
+        <h3>Timestamp : </h3>
+        <%= meal.get('timestamp') %>
+      <% } /*end if*/ %>
+      
+      <% if(meal.isGeoTagged()){ %>
+        <h3>Location</h3>
+        <img class="map" src="<%= meal.mapImageUrl() %>">
+        [<%= meal.get('latitude')%>, <%= meal.get('longitude')%>]
+      <% } /*end if*/ %>
+    </div>
+  </script>
+  
+  <script src="js/jquery-1.5.1.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/underscore.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/backbone.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/backbone.localStorage.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/application.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/jquery.mobile-1.0a3.js" type="text/javascript" charset="utf-8"></script>
+
+</body>
+</html>
+
+
+
+
